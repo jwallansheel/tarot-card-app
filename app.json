@@ -15,6 +15,9 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.Quickclaw.Tarot",
+      "versionCode": 1,
+      "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -22,6 +25,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3f925cff-e113-440d-8a15-e90138f48770"
+      }
     }
   }
 }
