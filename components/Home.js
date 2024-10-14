@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { TarotCards } from "../components/TarotCard"; // Make sure to adjust the import path
+import { TarotCards } from "../components/TarotCard"; 
 
 export default function Home() {
   return (
     <View style={styles.container}>
+      
       <Text style={styles.title}>Tarot Card App</Text>
       <TarotCards />
     </View>

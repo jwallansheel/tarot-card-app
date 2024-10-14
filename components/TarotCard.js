@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
+  ImageBackground,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -16,7 +18,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { tarotCards } from "./Cards"; // Assuming tarotCards is an array of card objects
+import { tarotCards } from "./Cards"; 
 
 const tarodCardImg = `https://img.freepik.com/free-vector/hand-drawn-esoteric-pattern-design_23-2149346196.jpg?size=500&ext=jpg`;
 const { width, height } = Dimensions.get("window");
@@ -39,7 +41,7 @@ const circleRadius = Math.max(
 );
 const circleCircumference = TWO_PI * circleRadius;
 
-function TarotCard({ card, cardIndex, index, onFlip, isFlipped, imageUri }) {
+function TarotCard({ card, cardIndex, index, onFlip, imageUri }) {
   const mounted = useSharedValue(0);
   const flipAnimation = useSharedValue(0); // For flipping animation
 
@@ -107,7 +109,6 @@ function TarotCard({ card, cardIndex, index, onFlip, isFlipped, imageUri }) {
             source={{ uri: imageUri }}
             style={styles.tarotCardFrontImage}
           />
-          {/* <Text style={styles.tarotCardLabel}>{card.name}</Text> */}
         </>
       )}
     </Animated.View>
@@ -153,25 +154,83 @@ function TarotWheel({ cards, onCardChange }) {
 }
 
 export function TarotCards() {
-  const [activeCardIndex, setActiveCardIndex] = useState(null);
+  const [selectedCards, setSelectedCards] = useState([]);
   const [activeCardName, setActiveCardName] = useState(null);
+  const [wheelVisible, setWheelVisible] = useState(true);
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // New state for speech
 
   const handleCardChange = (cardIndex) => {
     const card = tarotCards[cardIndex];
-    setActiveCardIndex(cardIndex);
-    setActiveCardName(card.name);
+
+    if (selectedCards.length < 3 && !selectedCards.includes(card)) {
+      setSelectedCards((prev) => [...prev, card]);
+
+      if (selectedCards.length === 0) {
+        setFeedbackMessage("You’ve picked your first card!");
+      } else if (selectedCards.length === 1) {
+        setFeedbackMessage("Second card! Just one more to go!");
+      } else if (selectedCards.length === 2) {
+        setFeedbackMessage("All cards selected! Let’s see your fate.");
+        setTimeout(() => {
+          setWheelVisible(false);
+        }, 1000); // Small delay before hiding the wheel
+      }
+
+      setActiveCardName(card.name);
+    }
+  };
+
+  const resetSelection = () => {
+    setSelectedCards([]);
+    setActiveCardName(null);
+    setWheelVisible(true);
+    setFeedbackMessage("");
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={{
+        uri: 'https://imgs.search.brave.com/ZDHtOlpqIY7XjdYOedVlfC2AHlu7BzatCNSXQXpLeuQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jb25zdGVsbGF0/aW9ucy1uaWdodC1z/a3lfMTE3OTQ3NS0z/NTYxMi5qcGc_c2l6/ZT02MjYmZXh0PWpw/Zw',
+      }}
+      style={styles.container}
+    >
       <StatusBar hidden />
-      {activeCardName && (
-        <Text style={styles.selectedCardText}>
-          Selected card: {activeCardName}
-        </Text>
+      {wheelVisible ? (
+        <>
+          {feedbackMessage ? (
+            <Text style={styles.feedbackText}>{feedbackMessage}</Text>
+          ) : null}
+          <TarotWheel cards={tarotCards} onCardChange={handleCardChange} />
+        </>
+      ) : (
+        <View>
+          <Text style={styles.finalMessage}>The Selected Cards are:</Text>
+
+          <View style={styles.finalCardsContainer}>
+            {selectedCards.map((card, index) => (
+             <Animated.View
+             key={index}
+             style={[
+               styles.finalCard, 
+               { transform: [{ scale: 1 }] } 
+             ]}
+           >
+             <Image
+               source={{ uri: tarodCardImg }}
+               style={styles.tarotCardFrontImage}
+             />
+             <Text style={styles.tarotCardLabel}>{card.name}</Text>
+           </Animated.View>
+           
+            ))}
+          </View>
+
+          <TouchableOpacity onPress={resetSelection} style={styles.resetButton}>
+            <Text style={styles.resetButtonText}>Select Again</Text>
+          </TouchableOpacity>
+        </View>
       )}
-      <TarotWheel cards={tarotCards} onCardChange={handleCardChange} />
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -180,7 +239,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#263bd9",
     minWidth: "100%",
   },
   selectedCardText: {
@@ -218,5 +276,39 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "700",
     fontSize: 24,
+  },
+  finalCardsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  finalCard: {
+    margin: 10,
+    alignItems: "center",
+  },
+  feedbackText: {
+    position: "absolute",
+    top: 50,
+    color: "yellow",
+    fontSize: 18,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  finalMessage: {
+    color: "white",
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  resetButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  resetButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "700",
   },
 });
