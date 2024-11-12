@@ -12,13 +12,14 @@ import {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
+  Extrapolation,
   interpolate,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { tarotCards } from "./Cards"; 
+import { tarotCards } from "./Cards";
 
 const tarodCardImg = `https://img.freepik.com/free-vector/hand-drawn-esoteric-pattern-design_23-2149346196.jpg?size=500&ext=jpg`;
 const { width, height } = Dimensions.get("window");
@@ -40,13 +41,13 @@ const circleRadius = Math.max(
   width
 );
 const circleCircumference = TWO_PI * circleRadius;
-
-function TarotCard({ card, cardIndex, index, onFlip, imageUri }) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function TarotCard({ card, cardIndex, index, onFlip, imageUri, activeindex }) {
   const mounted = useSharedValue(0);
   const flipAnimation = useSharedValue(0); // For flipping animation
 
   useEffect(() => {
-    mounted.value = withTiming(1, { duration: 500 });
+    mounted.value = withTiming(1, { duration: 900 });
   }, []);
 
   const cardStyle = useAnimatedStyle(() => {
@@ -61,10 +62,11 @@ function TarotCard({ card, cardIndex, index, onFlip, imageUri }) {
         },
         {
           translateY: interpolate(
+            //responsible for raising the centred card
             index.value,
             [cardIndex - 1, cardIndex, cardIndex + 1],
-            [0, -tarotCardSize.height / 2, 0],
-            Extrapolate.CLAMP
+            [0, -tarotCardSize.height / 1, 0],
+            Extrapolation.CLAMP
           ),
         },
         {
@@ -75,10 +77,14 @@ function TarotCard({ card, cardIndex, index, onFlip, imageUri }) {
   });
 
   const flipCard = () => {
+    // Start flip animation
     flipAnimation.value = withTiming(flipAnimation.value === 0 ? 180 : 0, {
-      duration: 600,
+      duration: 700,
     });
-    onFlip(cardIndex); // Notify parent about flip
+    // After flip animation completes, wait for 2 seconds before calling onFlip
+    setTimeout(() => {
+      onFlip(cardIndex); // Notify parent about flip after delay
+    }, 1000); // 2000 ms delay
   };
 
   return (
@@ -115,9 +121,17 @@ function TarotCard({ card, cardIndex, index, onFlip, imageUri }) {
   );
 }
 
-function TarotWheel({ cards, onCardChange }) {
+import { withDecay, withDelay } from "react-native-reanimated";
+
+// Inside TarotWheel component
+const TarotWheel = ({ cards, onCardChange }) => {
   const distance = useSharedValue(0);
+  const isPanActive = useSharedValue(false);
+
+  // Angle derived from the current distance
   const angle = useDerivedValue(() => distance.value / circleCircumference);
+
+  // Derived index for determining active card
   const interpolatedIndex = useDerivedValue(() => {
     const x = Math.abs((angle.value % TWO_PI) / theta);
     return angle.value < 0 ? x : numberOfCards - x;
@@ -126,10 +140,29 @@ function TarotWheel({ cards, onCardChange }) {
     Math.round(interpolatedIndex.value)
   );
 
-  const pan = Gesture.Pan().onChange((ev) => {
-    distance.value += ev.changeX * (circleCircumference / width);
-  });
+  // Pan gesture handler
+  const pan = Gesture.Pan()
+    .onBegin(() => {
+      isPanActive.value = true;
+    })
+    .onChange((ev) => {
+      // Apply user drag to distance
+      distance.value += ev.changeX * (circleCircumference / width);
+    })
+    .onEnd((ev) => {
+      isPanActive.value = false;
 
+      // Apply decay animation with slight delay for smooth stop
+      distance.value = withDelay(
+        100, // Delay in milliseconds
+        withDecay({
+          velocity: ev.velocityX * (circleCircumference / width),
+          deceleration: 0.995, // Lower value means longer slow-down
+        })
+      );
+    });
+
+  // Apply animated rotation style
   const wheelStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${angle.value}rad` }],
   }));
@@ -144,6 +177,7 @@ function TarotWheel({ cards, onCardChange }) {
             index={interpolatedIndex}
             cardIndex={cardIndex}
             name={card.name}
+            activeindex={activeIndex}
             imageUri={card.imageUri}
             onFlip={onCardChange}
           />
@@ -151,13 +185,21 @@ function TarotWheel({ cards, onCardChange }) {
       </Animated.View>
     </GestureDetector>
   );
-}
+};
 
 export function TarotCards() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [activeCardName, setActiveCardName] = useState(null);
   const [wheelVisible, setWheelVisible] = useState(true);
   const [feedbackMessage, setFeedbackMessage] = useState(""); // New state for speech
+  const [wheelKey, setWheelKey] = useState(0);
+
+  const handleFlip = (card) => {
+    // Update the key to trigger remounting
+    setWheelKey((prevKey) => prevKey + 1);
+    console.log(card);
+    return card;
+  };
 
   const handleCardChange = (cardIndex) => {
     const card = tarotCards[cardIndex];
@@ -167,6 +209,7 @@ export function TarotCards() {
 
       if (selectedCards.length === 0) {
         setFeedbackMessage("You’ve picked your first card!");
+        // handleFlip;
       } else if (selectedCards.length === 1) {
         setFeedbackMessage("Second card! Just one more to go!");
       } else if (selectedCards.length === 2) {
@@ -178,6 +221,7 @@ export function TarotCards() {
 
       setActiveCardName(card.name);
     }
+    return handleFlip(card);
   };
 
   const resetSelection = () => {
@@ -186,11 +230,19 @@ export function TarotCards() {
     setWheelVisible(true);
     setFeedbackMessage("");
   };
+  useEffect(() => {
+    console.log("This runs once after the component mounts");
+    const resetwheel = () => {};
+
+    return () => {
+      console.log("Cleanup before component unmounts");
+    };
+  }, []); // Empty array means this only runs once
 
   return (
     <ImageBackground
       source={{
-        uri: 'https://imgs.search.brave.com/ZDHtOlpqIY7XjdYOedVlfC2AHlu7BzatCNSXQXpLeuQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jb25zdGVsbGF0/aW9ucy1uaWdodC1z/a3lfMTE3OTQ3NS0z/NTYxMi5qcGc_c2l6/ZT02MjYmZXh0PWpw/Zw',
+        uri: "https://imgs.search.brave.com/ZDHtOlpqIY7XjdYOedVlfC2AHlu7BzatCNSXQXpLeuQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9jb25zdGVsbGF0/aW9ucy1uaWdodC1z/a3lfMTE3OTQ3NS0z/NTYxMi5qcGc_c2l6/ZT02MjYmZXh0PWpw/Zw",
       }}
       style={styles.container}
     >
@@ -200,7 +252,12 @@ export function TarotCards() {
           {feedbackMessage ? (
             <Text style={styles.feedbackText}>{feedbackMessage}</Text>
           ) : null}
-          <TarotWheel cards={tarotCards} onCardChange={handleCardChange} />
+          <TarotWheel
+            key={wheelKey} // Dynamically change key to remount TarotWheel
+            cards={tarotCards}
+            onFlip={(card) => console.log(card)}
+            onCardChange={handleCardChange}
+          />
         </>
       ) : (
         <View>
@@ -208,20 +265,16 @@ export function TarotCards() {
 
           <View style={styles.finalCardsContainer}>
             {selectedCards.map((card, index) => (
-             <Animated.View
-             key={index}
-             style={[
-               styles.finalCard, 
-               { transform: [{ scale: 1 }] } 
-             ]}
-           >
-             <Image
-               source={{ uri: tarodCardImg }}
-               style={styles.tarotCardFrontImage}
-             />
-             <Text style={styles.tarotCardLabel}>{card.name}</Text>
-           </Animated.View>
-           
+              <Animated.View
+                key={index}
+                style={[styles.finalCard, { transform: [{ scale: 1 }] }]}
+              >
+                <Image
+                  source={{ uri: tarodCardImg }}
+                  style={styles.tarotCardFrontImage}
+                />
+                <Text style={styles.tarotCardLabel}>{card.name}</Text>
+              </Animated.View>
             ))}
           </View>
 
@@ -253,7 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: tarotCardSize.borderRadius,
     resizeMode: "cover",
     borderWidth: 4,
-    borderColor: "red",
+    borderColor: "gold",
   },
   wheelContainer: {
     width: circleRadius * 2,
@@ -276,6 +329,10 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "700",
     fontSize: 24,
+    backgroundColor: "white",
+    flexWrap: "wrap",
+    padding: 1,
+    borderRadius: 10,
   },
   finalCardsContainer: {
     flexDirection: "row",
@@ -301,13 +358,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   resetButton: {
-    backgroundColor: "red",
+    backgroundColor: "white",
     padding: 10,
     borderRadius: 10,
     marginTop: 20,
   },
   resetButtonText: {
-    color: "white",
+    color: "black",
     fontSize: 18,
     fontWeight: "700",
   },

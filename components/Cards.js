@@ -2,57 +2,68 @@ export const tarotCards = [
   {
     key: "tarot-card-0",
     name: "The Fool",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/3/3e/Fool01.jpg", // The Fool
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/0-The-Fool.jpg", // The Fool
   },
   {
     key: "tarot-card-1",
     name: "The Magician",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/8/8d/Magician01.jpg", // The Magician
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/1-The-Magician.jpg", // The Magician
   },
   {
     key: "tarot-card-2",
     name: "The High Priestess",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/1/1c/High_Priestess01.jpg", // The High Priestess
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/2-The-High-Priestess.jpg", // The High Priestess
   },
   {
     key: "tarot-card-3",
     name: "The Empress",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/5/5e/Empress01.jpg", // The Empress
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/3-The-Empress.jpg", // The Empress
   },
   {
     key: "tarot-card-4",
     name: "The Emperor",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/d/d9/Emperor01.jpg", // The Emperor
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/4-The-Emperor.jpg", // The Emperor
   },
   {
     key: "tarot-card-5",
     name: "The Hierophant",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/c/c4/Hierophant01.jpg", // The Hierophant
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/5-The-Hierophant.jpg", // The Hierophant
   },
   {
     key: "tarot-card-6",
     name: "The Lovers",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/a/a6/Lovers01.jpg", // The Lovers
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/6-The-Lovers.jpg", // The Lovers
   },
   {
     key: "tarot-card-7",
     name: "The Chariot",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/e/e7/Chariot01.jpg", // The Chariot
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/7-The-Chariot.jpg", // The Chariot
   },
   {
     key: "tarot-card-8",
     name: "Strength",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/f/f7/Strength01.jpg", // Strength
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/8-Strength.jpg", // Strength
   },
   {
     key: "tarot-card-9",
     name: "The Hermit",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/b/bf/Hermit01.jpg", // The Hermit
+    imageUri:
+      "https://www.thetarotguide.com/wp-content/uploads/2023/08/9-The-Hermit.jpg", // The Hermit
   },
   {
     key: "tarot-card-10",
     name: "Wheel of Fortune",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/a/a1/Wheel_of_Fortune01.jpg", // Wheel of Fortune
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/a/a1/Wheel_of_Fortune01.jpg", // Wheel of Fortune
   },
   {
     key: "tarot-card-11",
@@ -112,41 +123,49 @@ export const tarotCards = [
   {
     key: "tarot-card-22",
     name: "Ace of Wands",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/c/cf/Ace_of_Wands01.jpg", // Ace of Wands
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/c/cf/Ace_of_Wands01.jpg", // Ace of Wands
   },
   {
     key: "tarot-card-23",
     name: "Two of Wands",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/f/f5/Two_of_Wands01.jpg", // Two of Wands
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/f/f5/Two_of_Wands01.jpg", // Two of Wands
   },
   {
     key: "tarot-card-24",
     name: "Three of Wands",
-    imageUri: "https://upload.wikimedia.org/wikipedia/en/d/de/Three_of_Wands01.jpg", // Three of Wands
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/d/de/Three_of_Wands01.jpg", // Three of Wands
   },
   {
     key: "tarot-card-25",
     name: "Four of Wands",
-   imageUri:"https://upload.wikimedia.org/wikipedia/en/e/e2/Four_of_Wands01.jpg",// Four of Wands 
-   }, 
-   { 
-   key:"tarot-card-26", 
-   name:"Five of Wands", 
-   imageUri:"https://upload.wikimedia.org/wikipedia/en/a/a9/Five_of_Wands01.jpg" ,// Five of Wands 
-   }, 
-   { 
-   key:"tarot-card-27" , 
-   name:"Six of Wands" , 
-   imageUri:"https://upload.wikimedia.org/wikipedia/en/f/fb/Six_of_Wands01.jpg" ,// Six of Wands 
-   }, 
-   { 
-   key:"tarot-card-28" , 
-   name:"Seven of Wands" , 
-   imageUri:"https://upload.wikimedia.org/wikipedia/en/b/b3/Seven_of_Wands01.jpg" ,// Seven of Wands 
-   }, 
-   { 
-   key:"tarot-card-29" , 
-   name:"Eight of Wands" , 
-   imageUri:"https://upload.wikimedia.org/wikipedia/en/0/0b/Eight_of_Wands01.jpg" ,// Eight of Wands 
-   }
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/e/e2/Four_of_Wands01.jpg", // Four of Wands
+  },
+  {
+    key: "tarot-card-26",
+    name: "Five of Wands",
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/a/a9/Five_of_Wands01.jpg", // Five of Wands
+  },
+  {
+    key: "tarot-card-27",
+    name: "Six of Wands",
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/f/fb/Six_of_Wands01.jpg", // Six of Wands
+  },
+  {
+    key: "tarot-card-28",
+    name: "Seven of Wands",
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/b/b3/Seven_of_Wands01.jpg", // Seven of Wands
+  },
+  {
+    key: "tarot-card-29",
+    name: "Eight of Wands",
+    imageUri:
+      "https://upload.wikimedia.org/wikipedia/en/0/0b/Eight_of_Wands01.jpg", // Eight of Wands
+  },
 ];
